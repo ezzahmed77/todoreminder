@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">My ToDo</string>
+    <string name="back_button">back button</string>
+    <string name="item_entry_title">Add New ToDo</string>
+    <string name="item_detail_title">Detail</string>
+    <string name="edit_todo_title">Edit ToDo</string>
+    <string name="todo_title_req">Title</string>
+    <string name="save_action">Save</string>
+    <string name="todo_description">Description</string>
+    <string name="priority">Priority</string>
+    <string name="state">ToDos</string>
+    <string name="all">All</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="next_seven_days">Next Week</string>
+    <string name="completed">Completed</string>
+    <string name="trash">Trash</string>
+    <string name="dropdown_menu">Dropdown menu</string>
+    <string name="reminder_on">Reminer is on</string>
+    <string name="reminder_off">Reminder is off</string>
+    <string name="show_details">Show Details</string>
+    <string name="show_completed">Show Completed</string>
+    <string name="sort_by_title">Sort By Title</string>
+    <string name="sort_by_priority">Sort By Priority</string>
+    <string name="empty_trash">Empty Trash</string>
+</resources>
