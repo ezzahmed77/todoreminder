@@ -24,10 +24,9 @@ Please find below some screenshots of the application:
 <img src="https://user-images.githubusercontent.com/112197330/216104349-836e7a68-5909-4a48-b341-73f5ebe3456e.png" width = "200"/>
 <br/>
 <img src="https://user-images.githubusercontent.com/112197330/216104486-4d6222f5-c5b1-4183-9f3d-b7db5b7e309d.png" width = "200"/>
-<img src="https://user-images.githubusercontent.com/112197330/216105404-69da185b-101b-4155-ae24-98a327faf908.png" width = "200"/>
 <img src="https://user-images.githubusercontent.com/112197330/216105904-432ac2c0-9c7b-458a-9c3a-4aa5749f3b0c.png" width = "200"/>
-<br/>
 <img src="https://user-images.githubusercontent.com/112197330/216106471-825bb02b-35e1-4d27-b355-3afebeb776f9.png" width = "200"/>
+<br/>
 <img src="https://user-images.githubusercontent.com/112197330/216108342-92014a67-4de0-4b0b-aeb1-12a7370fc728.png" width = "200"/>
 <img src="https://user-images.githubusercontent.com/112197330/216108674-b908ed90-b0b9-485a-a62e-cdd3b7d8daa9.png" width = "200"/>
 
