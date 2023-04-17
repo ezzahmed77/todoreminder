@@ -1,4 +1,4 @@
-# Todo Reminder Android Application
+# Todo Reminder
 
 This is an application to help users manage their tasks efficiently. It allows the user to add tasks with a title, description, priority, date, and time. The user can also choose to add a reminder to get notified about the task.
 
