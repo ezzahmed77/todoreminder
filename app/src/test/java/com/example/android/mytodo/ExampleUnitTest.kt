@@ -1,12 +1,11 @@
 package com.example.android.mytodo
 
 import com.example.android.mytodo.ui.todo.FilterType
-import com.example.android.mytodo.ui.todo.ToDoUiState
+import com.example.android.mytodo.ui.todo.TodoUiState
 import org.junit.Test
 
 import org.junit.Assert.*
 import java.time.LocalDate
-import java.util.logging.Filter
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -20,13 +19,13 @@ class ExampleUnitTest {
     }
     @Test
     fun getToDosBasedOnFilter(){
-        val listOfToday = getListFromState(listOfToDoUiState, FilterType.NEXT_SEVEN_DAYS)
+        val listOfToday = getListFromState(listOfTodoUiStates, FilterType.NEXT_SEVEN_DAYS)
         listOfToday.forEach {
             println(it.title)
         }
         assertEquals(4, listOfToday.size)
     }
-    private fun getListFromState(list: List<ToDoUiState>, filter: FilterType): List<ToDoUiState> {
+    private fun getListFromState(list: List<TodoUiState>, filter: FilterType): List<TodoUiState> {
         return when(filter){
             FilterType.ALL -> list.filter{!it.isTrashed}
 
@@ -58,32 +57,32 @@ class ExampleUnitTest {
     }
 
 
-    private val listOfToDoUiState = listOf(
-        ToDoUiState(
+    private val listOfTodoUiStates = listOf(
+        TodoUiState(
             id = 0,
             title = "Today todoUi",
             hasDateAndTime = true,
             date = LocalDate.now()
         ),
-        ToDoUiState(
+        TodoUiState(
             id = 1,
             title = "Tomorrow todoUi",
             hasDateAndTime = true,
             date = LocalDate.now().plusDays(1)
         ),
-        ToDoUiState(
+        TodoUiState(
             id = 2,
             title = "Next Week todoUi",
             hasDateAndTime = true,
             date = LocalDate.now().plusDays(2)
         ),
-        ToDoUiState(
+        TodoUiState(
             id = 3,
             title = "Next Week todoUi",
             hasDateAndTime = true,
             date = LocalDate.now().plusDays(3)
         ),
-        ToDoUiState(
+        TodoUiState(
             id = 4,
             title = "Next Week todoUi",
             hasDateAndTime = true,

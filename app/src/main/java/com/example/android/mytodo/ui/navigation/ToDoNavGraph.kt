@@ -1,5 +1,7 @@
 package com.example.android.mytodo.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -11,6 +13,7 @@ import com.example.android.mytodo.ui.home.HomeScreen
 import com.example.android.mytodo.ui.home.HomeDestination
 import com.example.android.mytodo.ui.todo.*
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun ToDoNavHost(
     navController: NavHostController,
@@ -29,7 +32,7 @@ fun ToDoNavHost(
                 navigateToToDoEntry = { navController.navigate(ToDoEntryDestination.route) })
         }
         composable(route = ToDoEntryDestination.route) {
-            ToDoEntryScreen(
+            TodoEntryScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )
@@ -40,7 +43,7 @@ fun ToDoNavHost(
                 type = NavType.IntType
             })
         ) {
-            ToDoDetailScreen(
+            TodoDetailScreen(
                 navigateToToDoEdit = {
                     navController.navigate("${ToDoEditDestination.route}/$it")
                 },
@@ -52,7 +55,7 @@ fun ToDoNavHost(
                 type = NavType.IntType
             })
         ) {
-            ToDoEditScreen(
+            TodoEditScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )

@@ -1,49 +1,58 @@
-package com.example.android.mytodo.utils
-
-import android.app.NotificationChannel
+import android.app.AlarmManager
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.example.android.mytodo.R
-import com.example.android.mytodo.ui.todo.ToDoUiState
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.example.android.mytodo.data.model.Todo
+import com.example.android.mytodo.utils.NotificationPublisher
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.*
 
-const val CHANNEL_ID = "todo_task_reminder"
-
-fun createNotificationChannel(channelId: String = CHANNEL_ID, context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "MyReminderChannel"
-        val descriptionText = "My todo reminder channel"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(channelId, name, importance).apply {
-            description = descriptionText
-        }
-
-        val notificationManager: NotificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
-}
-
-
-// shows a simple notification with a tap action to show an activity
-fun showSimpleNotification(
+@RequiresApi(Build.VERSION_CODES.S)
+fun scheduleNotification(
     context: Context,
-    channelId: String = CHANNEL_ID,
-    notificationId: Int,
-    title: String? = "No Title",
-    description: String? = "No Description",
-    priority: Int = NotificationCompat.PRIORITY_DEFAULT
+    todo: Todo,
+    notificationId: Int
 ) {
-    val builder = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_launcher_foreground)
-        .setContentTitle(title)
-        .setContentText(description)
-        .setPriority(priority)
-        .setAutoCancel(true)
+    // Get the AlarmManager service
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    with(NotificationManagerCompat.from(context)) {
-        notify(notificationId, builder.build())
+    // Create a PendingIntent for the notification
+    val intent = Intent(context, NotificationPublisher::class.java).apply {
+        putExtra("title", todo.title)
+        putExtra("description", todo.description)
+        putExtra("notificationId", notificationId)
     }
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        notificationId,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+    )
+
+    val dueDateTime = LocalDateTime.of(todo.date, todo.time )
+    val zonedDateTime: ZonedDateTime = dueDateTime.atZone(ZoneId.systemDefault()) // convert to ZonedDateTime
+    val timeInMilliSeconds: Long = zonedDateTime.toInstant().toEpochMilli()
+    // Calculate the trigger time
+    val calendar = Calendar.getInstance().apply {
+        timeInMillis =timeInMilliSeconds
+    }
+
+    // Schedule the notification using the AlarmManager
+    alarmManager.setExact(
+        AlarmManager.RTC_WAKEUP,
+        calendar.timeInMillis,
+        pendingIntent
+    )
 }
+
+fun cancelNotification(context: Context, todoId: Int) {
+    val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java) as NotificationManager
+    notificationManager.cancel(todoId)
+}
+

@@ -1,24 +1,26 @@
 package com.example.android.mytodo.data
 
 import android.content.Context
+import com.example.android.mytodo.data.repositories.TodoRepositoryImpl
+import com.example.android.mytodo.data.repositories.TodoRepository
 
 
 /**
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val toDoRepository: ToDoRepository
+    val todoRepository: TodoRepository
 }
 
 /**
- * [AppContainer] implementation that provides instance of [OfflineToDoRepository]
+ * [AppContainer] implementation that provides instance of [TodoRepositoryImpl]
  */
 class AppDataContainer(private val context: Context) : AppContainer {
     /**
-     * Implementation for [ToDoRepository]
+     * Implementation for [TodoRepository]
      */
-    override val toDoRepository: ToDoRepository by lazy {
+    override val todoRepository: TodoRepository by lazy {
 
-        OfflineToDoRepository(ToDoDatabase.getDatabase(context).toDoDao())
+        TodoRepositoryImpl(TodoDatabase.getDatabase(context).todoDao())
     }
 }

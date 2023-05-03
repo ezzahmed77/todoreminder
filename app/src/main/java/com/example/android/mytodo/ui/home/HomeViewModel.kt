@@ -1,33 +1,31 @@
 package com.example.android.mytodo.ui.home
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import androidx.compose.runtime.*
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.mytodo.data.Priority
-import com.example.android.mytodo.data.ToDoRepository
-import com.example.android.mytodo.ui.todo.*
-import com.example.android.mytodo.utils.ToDoBroadCastReceiver
+import cancelNotification
+import com.example.android.mytodo.data.model.Todo
+import com.example.android.mytodo.data.repositories.TodoRepository
+import com.example.android.mytodo.ui.todo.FilterType
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
-enum class Case{
-    Update, Delete
-}
+import scheduleNotification
+
+
 class HomeViewModel(
     val context: Context,
-    private val todoRepository: ToDoRepository): ViewModel() {
+    private val todoRepository: TodoRepository
+): ViewModel() {
 
-    var homeUiState: StateFlow<HomeUiState> = todoRepository.getAllTodosStream().map{
-        HomeUiState(it.map{it.toToDoUiState()})
+    var homeUiState: StateFlow<HomeUiState> = todoRepository.getAllTodosStream().map{todos->
+        HomeUiState(todos)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -37,69 +35,47 @@ class HomeViewModel(
     var filter by mutableStateOf(FilterType.ALL)
     private set
 
-    fun updateFilter(filterType: FilterType){
-        filter = filterType
-    }
-
     var sort by mutableStateOf(Sort.TITLE)
     private set
 
+    fun updateFilter(filterType: FilterType){
+        this@HomeViewModel.filter = filterType
+    }
     fun updateSort(sort: Sort){
         this@HomeViewModel.sort = sort
     }
 
 
-    suspend fun updateToDo(newToDoUiState: ToDoUiState) {
-        todoRepository.updateToDo(newToDoUiState.toToDo())
-        if(newToDoUiState.isTrashed){
-            updateReminder(newToDoUiState, Case.Delete)
+    @RequiresApi(Build.VERSION_CODES.S)
+    suspend fun updateTodo(newTodo: Todo) {
+        todoRepository.updateTodo(newTodo)
+        if(newTodo.isTrashed){
+            updateReminder(newTodo)
         }else{
-            updateReminder(newToDoUiState, Case.Update)
+            updateReminder(newTodo)
         }
     }
 
-    suspend fun deleteToDo(toDoUiState: ToDoUiState){
-        todoRepository.deleteToDo(toDoUiState.toToDo())
-        updateReminder(toDoUiState, Case.Delete)
+    @RequiresApi(Build.VERSION_CODES.S)
+    suspend fun deleteTodo(todo: Todo){
+        todoRepository.deleteTodo(todo)
+        updateReminder(todo)
     }
 
-    suspend fun deleteAllToDosInTrash(){
-        homeUiState.value.todosUiState.filter { it.isTrashed }
+    suspend fun deleteAllTodosInTrash(){
+        homeUiState.value.todos.filter { it.isTrashed }
             .forEach {
-                todoRepository.deleteToDo(it.toToDo())
+                todoRepository.deleteTodo(it)
             }
     }
 
-    private fun updateReminder(toDoUiState: ToDoUiState, case: Case) {
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, ToDoBroadCastReceiver::class.java)
-            .putExtra(TODO_TITLE, toDoUiState.title)
-            .putExtra(TODO_DESCRIPTION, toDoUiState.description)
-        val alarmIntent = PendingIntent.getBroadcast(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val localDateTime = LocalDateTime.of(toDoUiState.date, toDoUiState.time).toInstant(
-            ZonedDateTime.now().offset).toEpochMilli()
-
-        if(case == Case.Update){
-            if(toDoUiState.hasReminder){
-                alarmMgr.setExact(
-                    AlarmManager.RTC_WAKEUP,
-                    localDateTime,
-                    alarmIntent
-                )
-            }else{
-                alarmMgr.cancel(alarmIntent)
-            }
-        }else {
-            alarmMgr.cancel(alarmIntent)
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun updateReminder(todo: Todo) {
+        if(todo.hasReminder){
+            scheduleNotification(context = context, notificationId = todo.id, todo = todo)
+        }else{
+            cancelNotification(context = context, todoId = todo.id)
         }
-
-
     }
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
@@ -107,4 +83,4 @@ class HomeViewModel(
 
 }
 
-data class HomeUiState(val todosUiState: List<ToDoUiState> = listOf())
+data class HomeUiState(val todos: List<Todo> = listOf())

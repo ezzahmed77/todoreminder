@@ -3,25 +3,25 @@ package com.example.android.mytodo.ui.todo
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.mytodo.data.ToDoRepository
+import com.example.android.mytodo.data.repositories.TodoRepository
 import kotlinx.coroutines.flow.*
 
-class ToDoDetailViewModel(
+class TodoDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    toDoRepository: ToDoRepository
+    todoRepository: TodoRepository
 ) : ViewModel(){
 
     private val todoId: Int = checkNotNull(savedStateHandle[ToDoDetailsDestination.todoIdArg])
 
-    val uiState: StateFlow<ToDoUiState> = toDoRepository.getToDoStream(id = todoId)
+    val uiState: StateFlow<TodoUiState> = todoRepository.getTodoStream(id = todoId)
         .filterNotNull()
         .map {
-            it.toToDoUiState()
+            it.toTodoUiState()
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = ToDoUiState()
+            initialValue = TodoUiState()
         )
 
     companion object {

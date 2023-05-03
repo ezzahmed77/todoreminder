@@ -1,14 +1,16 @@
 package com.example.android.mytodo.ui.todo
 
-import com.example.android.mytodo.data.Priority
-import com.example.android.mytodo.data.ToDo
+import com.example.android.mytodo.data.model.Priority
+import com.example.android.mytodo.data.model.Todo
 import java.time.LocalDate
 import java.time.LocalTime
 
 /**
  * Represents Ui State for an Item.
  */
-data class ToDoUiState(
+
+
+data class TodoUiState(
     val id: Int = 0,
     val title: String = "",
     val description: String = "",
@@ -23,11 +25,11 @@ data class ToDoUiState(
 )
 
 /**
- * Extension function to convert [ToDoUiState] to [ToDo].
+ * Extension function to convert [TodoUiState] to [Todo].
  */
-fun ToDoUiState.toToDo(): ToDo = ToDo(
+fun TodoUiState.toTodo(): Todo = Todo(
     id = id,
-    title = title ?: "No Title",
+    title = title,
     description = description,
     priority = priority,
     hasDateAndTime = hasDateAndTime,
@@ -39,9 +41,9 @@ fun ToDoUiState.toToDo(): ToDo = ToDo(
 )
 
 /**
- * Extension function to convert [ToDo] to [ToDoUiState]
+ * Extension function to convert [Todo] to [TodoUiState]
  */
-fun ToDo.toToDoUiState(actionEnabled: Boolean = false): ToDoUiState = ToDoUiState(
+fun Todo.toTodoUiState(actionEnabled: Boolean = false): TodoUiState = TodoUiState(
     id = id,
     title = title,
     description = description,
@@ -55,6 +57,6 @@ fun ToDo.toToDoUiState(actionEnabled: Boolean = false): ToDoUiState = ToDoUiStat
     actionEnabled = actionEnabled
 )
 
-fun ToDoUiState.isValid() : Boolean {
+fun TodoUiState.isValid() : Boolean {
     return title.isNotBlank()
 }

@@ -1,5 +1,7 @@
 package com.example.android.mytodo.ui.todo
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -8,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android.mytodo.R
-import com.example.android.mytodo.ToDoFilterAppBar
-import com.example.android.mytodo.ToDoScreenAppBar
+import com.example.android.mytodo.TodoScreenAppBar
 import com.example.android.mytodo.ui.AppViewModelProvider
 import com.example.android.mytodo.ui.navigation.NavDestination
 import kotlinx.coroutines.launch
@@ -22,26 +23,27 @@ object ToDoEditDestination : NavDestination {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun ToDoEditScreen(
+fun TodoEditScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ToDoEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: TodoEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
-            ToDoScreenAppBar(
+            TodoScreenAppBar(
                 title = stringResource(ToDoEditDestination.titleRes),
                 canNavigateBack = true,
                 onNavigationIconClicked = onNavigateUp
             )
         }
     ) { innerPadding ->
-        ToDoEntryBody(
-            toDoUiState = viewModel.toDoUiState,
-            onToDoValueChange = viewModel::updateUiState,
+        TodoEntryBody(
+            todoUiState = viewModel.todoUiState,
+            onTodoValueChange = viewModel::updateUiState,
             onSaveClick = {
                 scope.launch {
                     viewModel.updateToDo()

@@ -8,43 +8,42 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.android.mytodo.ToDoApplication
 import com.example.android.mytodo.ui.home.HomeViewModel
-import com.example.android.mytodo.ui.todo.ToDoDetailViewModel
-import com.example.android.mytodo.ui.todo.ToDoEditViewModel
-import com.example.android.mytodo.ui.todo.ToDoEntryViewModel
+import com.example.android.mytodo.ui.todo.TodoDetailViewModel
+import com.example.android.mytodo.ui.todo.TodoEditViewModel
+import com.example.android.mytodo.ui.todo.TodoEntryViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(
-                context = todoApplication().context,
-                todoRepository = todoApplication().container.toDoRepository
+                context = todoApplication().applicationContext,
+                todoRepository = todoApplication().container.todoRepository
             )
         }
 
         // Initializer for ToDoDetailViewModel
         initializer {
-            ToDoDetailViewModel(
+            TodoDetailViewModel(
                 this.createSavedStateHandle(),
-                todoApplication().container.toDoRepository
+                todoApplication().container.todoRepository
             )
         }
 
         // Initializer for ToDoEntryViewModel
         initializer {
-            ToDoEntryViewModel(
-                context = todoApplication().context,
-                toDoRepository =  todoApplication().container.toDoRepository,
-                alarmManager = todoApplication().alarmManager
+            TodoEntryViewModel(
+                context = todoApplication().applicationContext,
+                todoRepository =  todoApplication().container.todoRepository,
             )
         }
 
         // Initializer for ToDoDetailViewModel
         initializer {
-            ToDoEditViewModel(
-                todoApplication().context,
+            TodoEditViewModel(
+                todoApplication().applicationContext,
                 this.createSavedStateHandle(),
-                todoApplication().container.toDoRepository
+                todoApplication().container.todoRepository
             )
         }
 

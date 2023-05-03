@@ -23,4 +23,14 @@
     <string name="sort_by_title">Sort By Title</string>
     <string name="sort_by_priority">Sort By Priority</string>
     <string name="empty_trash">Empty Trash</string>
+    <string name="date_and_time"><![CDATA[Date & Time]]></string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_reminder">Add Reminder</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="location_permission_needed">Location Permission needed</string>
+    <string name="request_permission">Request Permission</string>
 </resources>

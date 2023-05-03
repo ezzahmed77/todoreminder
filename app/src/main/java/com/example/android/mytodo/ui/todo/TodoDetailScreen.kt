@@ -1,20 +1,22 @@
 package com.example.android.mytodo.ui.todo
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android.mytodo.R
-import com.example.android.mytodo.ToDoScreenAppBar
+import com.example.android.mytodo.TodoScreenAppBar
 import com.example.android.mytodo.ui.AppViewModelProvider
 import com.example.android.mytodo.ui.navigation.NavDestination
 import java.time.format.DateTimeFormatter
@@ -27,21 +29,21 @@ object ToDoDetailsDestination : NavDestination {
 }
 
 @Composable
-fun ToDoDetailScreen(
+fun TodoDetailScreen(
     modifier: Modifier = Modifier,
     navigateToToDoEdit: (Int) -> Unit,
     navigateBack: () -> Unit,
-    viewModel: ToDoDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: TodoDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
-            ToDoScreenAppBar(
-                title = stringResource(ToDoDetailsDestination.titleRes),
+            TodoScreenAppBar(
+                title = stringResource(id = R.string.item_detail_title),
                 canNavigateBack = true,
                 onNavigationIconClicked = navigateBack
             )
-
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -54,7 +56,7 @@ fun ToDoDetailScreen(
                     tint = MaterialTheme.colors.onPrimary
                 )
             }
-        },
+        }
     ) { innerPadding ->
         ToDoDetailsBody(
             toDoUiState = uiState,
@@ -63,44 +65,41 @@ fun ToDoDetailScreen(
     }
 }
 
-
 @Composable
 fun ToDoDetailsBody(
     modifier: Modifier = Modifier,
-    toDoUiState: ToDoUiState
+    toDoUiState: TodoUiState
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 24.dp)
     ) {
-        ToDoDetailItem(name = "Title:", value = toDoUiState.title )
+        ToDoDetailItem(name = "Title", value = toDoUiState.title )
 
         if(toDoUiState.description.isNotEmpty()){
-            ToDoDetailItem(name = "Description:", value = toDoUiState.description )
+            ToDoDetailItem(name = "Description", value = toDoUiState.description )
         }
 
         ToDoDetailItem(
-            name = "Priority:",
+            name = "Priority",
             value = toDoUiState.priority.name,
             valueColor = toDoUiState.priority.color
         )
 
         if(toDoUiState.hasDateAndTime){
             ToDoDetailItem(
-                name = "Date:",
+                name = "Date",
                 value =  toDoUiState.date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
             )
             ToDoDetailItem(
-                name = "Time:",
-                value =  toDoUiState.time.format(DateTimeFormatter.ofPattern("hh: mm"))
+                name = "Time",
+                value =  toDoUiState.time.format(DateTimeFormatter.ofPattern("hh:mm a"))
             )
             ToDoDetailItem(
-                name = "Reminder:",
+                name = "Reminder",
                 value =  if(toDoUiState.hasReminder) "On" else "Off"
             )
-
         }
     }
 }
@@ -110,38 +109,37 @@ fun ToDoDetailItem(
     modifier: Modifier = Modifier,
     name: String,
     value: String,
-    nameColor: Color = MaterialTheme.colors.onPrimary,
-    valueColor: Color = MaterialTheme.colors.onPrimary
+    nameColor: Color = MaterialTheme.colors.secondary,
+    valueColor: Color = MaterialTheme.colors.onSurface
 ){
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         elevation = 4.dp
     ) {
-        Row(modifier = Modifier
-            .background(color = MaterialTheme.colors.primary)
-            .padding(horizontal = 8.dp, vertical = 16.dp)
-            .fillMaxWidth()
-        ){
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.h3,
-                color = nameColor,
-                modifier = Modifier.padding(end = 16.dp)
+                style = MaterialTheme.typography.body1.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = nameColor
+                ),
+                modifier = Modifier.width(100.dp)
             )
             Text(
                 text = value,
-                style = MaterialTheme.typography.h3,
-                color = valueColor,
+                style = MaterialTheme.typography.body1.copy(
+                    color = valueColor,
+                    fontWeight = FontWeight.SemiBold
+                ),
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.End
             )
         }
-
     }
 }
-
-
-
-
-

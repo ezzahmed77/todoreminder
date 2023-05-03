@@ -1,4 +1,4 @@
-package com.example.android.mytodo.data
+package com.example.android.mytodo.data.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.room.*
@@ -7,20 +7,20 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Entity(tableName = "todo")
-data class ToDo(
+data class Todo(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "description")
     val description: String = "",
-    @ColumnInfo(name = "priority")
     @TypeConverters(PriorityConverter::class)
+    @ColumnInfo(name = "priority")
     val priority: Priority,
     @ColumnInfo(name = "hasDateAndTime")
     val hasDateAndTime: Boolean = false,
-    @ColumnInfo(name = "data")
     @TypeConverters(DateAndTimeConverter::class)
+    @ColumnInfo(name = "data")
     val date: LocalDate = LocalDate.now(),
     @TypeConverters(DateAndTimeConverter::class)
     @ColumnInfo(name = "time")
@@ -45,7 +45,7 @@ sealed class Priority(
     object NotSelected: Priority("Not selected", Color.Black, 4)
 }
 
-class PriorityConverter(){
+class PriorityConverter{
     @TypeConverter
     fun priorityToInt(priority: Priority): Int{
         return when(priority){
@@ -57,7 +57,7 @@ class PriorityConverter(){
     }
 
     @TypeConverter
-    fun intToPriority(num: Int): Priority{
+    fun intToPriority(num: Int): Priority {
         return when(num){
             1-> Priority.High
             2-> Priority.Medium
@@ -67,7 +67,7 @@ class PriorityConverter(){
     }
 }
 
-class DateAndTimeConverter(){
+class DateAndTimeConverter{
     @TypeConverter
     fun localDateToString(date: LocalDate): String{
         return date.format(DateTimeFormatter.ISO_DATE)
